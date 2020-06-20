@@ -42,11 +42,11 @@ public class Main {
             System.out.println("Cliente: " + cliente.getNome() + " -> Fornecedor: " + map.get(cliente).getNome());
         }
     }
-    private static void showData(ArrayList<Registro> regist){
-        System.out.println("Fornecedor: "+regist.get(0).getFornecedor().getNome());
-        System.out.println("<><><><><><><><><><><>");
+
+    private static void showData(ArrayList<Registro> regist) {
+        System.out.println("<><><><><><><><><><><><><><><><><>");
         for (Registro registro : regist) {
-            System.out.println("- "+registro.getCliente().getNome()+" -");
+            System.out.println("- " + registro.getCliente().getNome() + " -");
         }
         System.out.println("");
     }
@@ -87,9 +87,8 @@ public class Main {
             line = sr.readLine();
         }
         // - Scatter Graph Plot View -
-        //Plotter plot = new Plotter(clientes, fornecedores);
+        Plotter plot = new Plotter(clientes, fornecedores);
 
-        // Sumarização do mais próximo. Utilizar um HashMap para relacionar??
         Map<Cliente, Fornecedor> map = new HashMap<>();
         for (Cliente cliente : clientes) {
             map.put(cliente, fornecedores.get(0));
@@ -115,16 +114,27 @@ public class Main {
                 }
             }
             //antes de ir pro próximo fornecedor ordena e imprime
-            System.out.println("Fornecedor: "+fornecedor.getNome());
-           // Collections.sort(regist, new ListByDescDistance());
-            System.out.println("Total de clientes para o fornecedor: "+regist.size());
-            //showData(regist);
+            System.out.println("Fornecedor: " + fornecedor.getNome());
+            Collections.sort(regist, new ListByLesserValue());
+            System.out.println("Total de clientes para o fornecedor: " + regist.size());
+            showData(regist);
         }
 
     }
-//    private static class ListByDescDistance implements Comparator<Object> {
-//        
-//    }
+
+    private static class ListByLesserValue implements Comparator<Registro> {
+        //tenho todos os clientes relacionados ao fornecedor no array: Apenas ordeno pelo número menor
+
+        @Override
+        public int compare(Registro o1, Registro o2) {
+            //calcula distância e retorna o menor (subtração)
+            double d1 = getDistancia(o1.getCliente().getCordenada().getLongitude(), o1.getCliente().getCordenada().getLatitude(),
+                    o1.getFornecedor().getCordenada().getLongitude(), o1.getFornecedor().getCordenada().getLatitude());
+            double d2 = getDistancia(o2.getCliente().getCordenada().getLongitude(), o2.getCliente().getCordenada().getLatitude(),
+                    o2.getFornecedor().getCordenada().getLongitude(), o2.getFornecedor().getCordenada().getLatitude());
+            return (int)-(d1 - d2);
+        }
+    }
 }
 
 class Registro {
