@@ -51,6 +51,14 @@ public class Main {
         System.out.println("");
     }
 
+    private static void showDataTwo(ArrayList<Cliente> clientes) {
+        System.out.println("<><><><><><><><><><><><><><><><><>");
+        for (Cliente cliente : clientes) {
+            System.out.println("- " + cliente.getNome() + " -");
+        }
+        System.out.println("");
+    }
+
     private static double getDistanciaDois(double latitude, double longitude, double latitudePto, double longitudePto) {
         double dlon, dlat, a, distancia;
         dlon = longitudePto - longitude;
@@ -87,7 +95,7 @@ public class Main {
             line = sr.readLine();
         }
         // - Scatter Graph Plot View -
-        Plotter plot = new Plotter(clientes, fornecedores);
+        // Plotter plot = new Plotter(clientes, fornecedores);
 
         Map<Cliente, Fornecedor> map = new HashMap<>();
         for (Cliente cliente : clientes) {
@@ -102,39 +110,70 @@ public class Main {
             }
         }
         //printHashMap(map);
-
+//        for (Fornecedor fornecedor : fornecedores) {
+//            //cria um array list colocando todos os clientes relacionados com este fornecedor
+//            ArrayList<Registro> regist = new ArrayList<>();
+//            //adicionar ao array apenas clientes que possuem esse fornecedor, depois imprimir
+//            //percorre o map
+//            for (Cliente cliente : map.keySet()) {
+//                if (map.get(cliente).getNome().equals(fornecedor.getNome())) {
+//                    regist.add(new Registro(cliente, fornecedor));
+//                }
+//            }
+//            //antes de ir pro próximo fornecedor ordena e imprime
+//            System.out.println("Fornecedor: " + fornecedor.getNome());
+//            Collections.sort(regist, new ListByLesserValue());
+//            System.out.println("Total de clientes para o fornecedor: " + regist.size());
+//            showData(regist);
+//        }
         for (Fornecedor fornecedor : fornecedores) {
-            //cria um array list colocando todos os clientes relacionados com este fornecedor
-            ArrayList<Registro> regist = new ArrayList<>();
-            //adicionar ao array apenas clientes que possuem esse fornecedor, depois imprimir
-            //percorre o map
+            ArrayList<Cliente> regist = new ArrayList<>();
             for (Cliente cliente : map.keySet()) {
                 if (map.get(cliente).getNome().equals(fornecedor.getNome())) {
-                    regist.add(new Registro(cliente, fornecedor));
+                    regist.add(cliente);
                 }
             }
-            //antes de ir pro próximo fornecedor ordena e imprime
+
             System.out.println("Fornecedor: " + fornecedor.getNome());
-            Collections.sort(regist, new ListByLesserValue());
+            //Collections.sort(regist, new ListByLesserClient(fornecedor));
             System.out.println("Total de clientes para o fornecedor: " + regist.size());
-            showData(regist);
+            showDataTwo(regist);
         }
 
     }
 
-    private static class ListByLesserValue implements Comparator<Registro> {
-        //tenho todos os clientes relacionados ao fornecedor no array: Apenas ordeno pelo número menor
+    private static class ListByLesserClient implements Comparator<Cliente> {
+
+        Fornecedor f;
+
+        public ListByLesserClient(Fornecedor f) {
+            this.f = f;
+        }
 
         @Override
-        public int compare(Registro o1, Registro o2) {
-            //calcula distância e retorna o menor (subtração)
-            double d1 = getDistancia(o1.getCliente().getCordenada().getLongitude(), o1.getCliente().getCordenada().getLatitude(),
-                    o1.getFornecedor().getCordenada().getLongitude(), o1.getFornecedor().getCordenada().getLatitude());
-            double d2 = getDistancia(o2.getCliente().getCordenada().getLongitude(), o2.getCliente().getCordenada().getLatitude(),
-                    o2.getFornecedor().getCordenada().getLongitude(), o2.getFornecedor().getCordenada().getLatitude());
-            return (int)-(d1 - d2);
+        public int compare(Cliente o1, Cliente o2) {
+            double d1 = getDistancia(o1.getCordenada().getLongitude(), o1.getCordenada().getLatitude(),
+                    f.getCordenada().getLongitude(), f.getCordenada().getLatitude());
+            double d2 = getDistancia(o2.getCordenada().getLongitude(), o2.getCordenada().getLatitude(),
+                    f.getCordenada().getLongitude(), f.getCordenada().getLatitude());
+            return (int)-((d1) - (d2));
         }
+
     }
+
+//    private static class ListByLesserValue implements Comparator<Registro> {
+//        //tenho todos os clientes relacionados ao fornecedor no array: Apenas ordeno pelo número menor
+//
+//        @Override
+//        public int compare(Registro o1, Registro o2) {
+//            //calcula distância e retorna o menor (subtração)
+//            double d1 = getDistancia(o1.getCliente().getCordenada().getLongitude(), o1.getCliente().getCordenada().getLatitude(),
+//                    o1.getFornecedor().getCordenada().getLongitude(), o1.getFornecedor().getCordenada().getLatitude());
+//            double d2 = getDistancia(o2.getCliente().getCordenada().getLongitude(), o2.getCliente().getCordenada().getLatitude(),
+//                    o2.getFornecedor().getCordenada().getLongitude(), o2.getFornecedor().getCordenada().getLatitude());
+//            return (int) -(d1 - d2);
+//        }
+//    }
 }
 
 class Registro {
