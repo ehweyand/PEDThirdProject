@@ -95,7 +95,7 @@ public class Main {
             line = sr.readLine();
         }
         // - Scatter Graph Plot View -
-        // Plotter plot = new Plotter(clientes, fornecedores);
+        Plotter plot = new Plotter(clientes, fornecedores);
 
         Map<Cliente, Fornecedor> map = new HashMap<>();
         for (Cliente cliente : clientes) {
@@ -135,7 +135,7 @@ public class Main {
             }
 
             System.out.println("Fornecedor: " + fornecedor.getNome());
-            //Collections.sort(regist, new ListByLesserClient(fornecedor));
+            Collections.sort(regist, new ListByLesserClient(fornecedor));
             System.out.println("Total de clientes para o fornecedor: " + regist.size());
             showDataTwo(regist);
         }
@@ -152,11 +152,13 @@ public class Main {
 
         @Override
         public int compare(Cliente o1, Cliente o2) {
-            double d1 = getDistancia(o1.getCordenada().getLongitude(), o1.getCordenada().getLatitude(),
-                    f.getCordenada().getLongitude(), f.getCordenada().getLatitude());
-            double d2 = getDistancia(o2.getCordenada().getLongitude(), o2.getCordenada().getLatitude(),
-                    f.getCordenada().getLongitude(), f.getCordenada().getLatitude());
-            return (int)-((d1) - (d2));
+//            double d1 = getDistancia(o1.getCordenada().getLongitude(), o1.getCordenada().getLatitude(),
+//                    f.getCordenada().getLongitude(), f.getCordenada().getLatitude());
+//            double d2 = getDistancia(o2.getCordenada().getLongitude(), o2.getCordenada().getLatitude(),
+//                    f.getCordenada().getLongitude(), f.getCordenada().getLatitude());
+            return (int)-((getDistancia(o1.getCordenada().getLongitude(), o1.getCordenada().getLatitude(),
+                    f.getCordenada().getLongitude(), f.getCordenada().getLatitude())) - (getDistancia(o2.getCordenada().getLongitude(), o2.getCordenada().getLatitude(),
+                    f.getCordenada().getLongitude(), f.getCordenada().getLatitude())));
         }
 
     }
