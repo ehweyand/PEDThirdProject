@@ -22,6 +22,8 @@ import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JComponent;
@@ -40,24 +42,16 @@ public class Main {
             System.out.println("Cliente: " + cliente.getNome() + " -> Fornecedor: " + map.get(cliente).getNome());
         }
     }
-
-    private static void showDatainLine(ArrayList<Fornecedor> f, ArrayList<Cliente> c) {
-        System.out.println("Fornecedores: \n");
-        for (Fornecedor fornecedor : f) {
-            System.out.println(fornecedor.getNome());
-            System.out.print("Lon: " + fornecedor.getCordenada().getLongitude() + " ");
-            System.out.print("Lat: " + fornecedor.getCordenada().getLatitude() + " ");
-        }
-        System.out.println("Clientes: \n");
-        for (Cliente cliente : c) {
-            System.out.println(cliente.getNome());
-            System.out.print("Lon: " + cliente.getCordenada().getLongitude() + " ");
-            System.out.print("Lat: " + cliente.getCordenada().getLatitude() + " ");
+    private static void showData(ArrayList<Registro> regist){
+        System.out.println("Fornecedor: "+regist.get(0).getFornecedor().getNome());
+        System.out.println("<><><><><><><><><><><>");
+        for (Registro registro : regist) {
+            System.out.println("- "+registro.getCliente().getNome()+" -");
         }
         System.out.println("");
     }
 
-    public static double getDistanciaDois(double latitude, double longitude, double latitudePto, double longitudePto) {
+    private static double getDistanciaDois(double latitude, double longitude, double latitudePto, double longitudePto) {
         double dlon, dlat, a, distancia;
         dlon = longitudePto - longitude;
         dlat = latitudePto - latitude;
@@ -66,7 +60,7 @@ public class Main {
         return 6378140 * distancia;
         /* 6378140 is the radius of the Earth in meters*/ }
 
-    private static double getDistancia(double x1, double y1, double x2, double y2) {
+    protected static double getDistancia(double x1, double y1, double x2, double y2) {
         return Math.sqrt(Math.pow(x2 - x1, 2)
                 + Math.pow(y2 - y1, 2) * 1.0);
     }
@@ -108,12 +102,61 @@ public class Main {
                 }
             }
         }
-        printHashMap(map);
+        //printHashMap(map);
+
+        for (Fornecedor fornecedor : fornecedores) {
+            //cria um array list colocando todos os clientes relacionados com este fornecedor
+            ArrayList<Registro> regist = new ArrayList<>();
+            //adicionar ao array apenas clientes que possuem esse fornecedor, depois imprimir
+            //percorre o map
+            for (Cliente cliente : map.keySet()) {
+                if (map.get(cliente).getNome().equals(fornecedor.getNome())) {
+                    regist.add(new Registro(cliente, fornecedor));
+                }
+            }
+            //antes de ir pro próximo fornecedor ordena e imprime
+            System.out.println("Fornecedor: "+fornecedor.getNome());
+           // Collections.sort(regist, new ListByDescDistance());
+            System.out.println("Total de clientes para o fornecedor: "+regist.size());
+            //showData(regist);
+        }
+
     }
+//    private static class ListByDescDistance implements Comparator<Object> {
+//        
+//    }
 }
+
+class Registro {
+
+    private Cliente cliente;
+    private Fornecedor fornecedor;
+
+    public Registro(Cliente cliente, Fornecedor fornecedor) {
+        this.cliente = cliente;
+        this.fornecedor = fornecedor;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public Fornecedor getFornecedor() {
+        return fornecedor;
+    }
+
+    public void setFornecedor(Fornecedor fornecedor) {
+        this.fornecedor = fornecedor;
+    }
+
+}
+
 // Plot classes
 //libs: JFreeChart, VisualVM, XChart
-
 class Plotter extends JFrame {
 
     public Plotter() {
