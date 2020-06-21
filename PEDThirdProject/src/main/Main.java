@@ -123,8 +123,11 @@ public class Main {
             }
             //antes de ir pro próximo fornecedor
             System.out.println("Fornecedor: " + fornecedor.getNome());
-            //ordena
-            Collections.sort(clibyforn, new SortClients());
+            
+            //Comparator em uma linha (Java 1.8)
+            Comparator<Cliente> comparador = Comparator.comparing(Cliente::getDist);
+            Comparator<Cliente> comparadorReverso = comparador.reversed();
+            Collections.sort(clibyforn, comparadorReverso);
             System.out.println("Total de clientes para o fornecedor: " + clibyforn.size());
             showData(clibyforn);
             clearScreen();
