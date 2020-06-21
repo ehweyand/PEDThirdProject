@@ -43,22 +43,23 @@ public class Main {
         }
     }
 
-    private static void showData(ArrayList<Registro> regist) {
-        System.out.println("<><><><><><><><><><><><><><><><><>");
-        for (Registro registro : regist) {
-            System.out.println("- " + registro.getCliente().getNome() + " -");
-        }
-        System.out.println("");
-    }
-
-    private static void showDataTwo(ArrayList<Cliente> clientes) {
-        System.out.println("<><><><><><><><><><><><><><><><><>");
+    private static void showData(ArrayList<Cliente> clientes) {
+        System.out.println("<><><><><><><><><><><><><><><><><><><><><><>");
         for (Cliente cliente : clientes) {
-            System.out.println("- " + cliente.getNome() + " -");
+            System.out.println("- " + cliente.getNome() + " - Distância: " + cliente.getDist());
         }
         System.out.println("");
     }
 
+    private static void clearScreen() {
+        System.out.println("<><><><><><><><><><><><><><><><><><><><>");
+        for (int i = 0; i < 28; i++) {
+            System.out.println("");
+        }
+        System.out.println("<><><><><><><><><><><><><><><><><><><><>");
+    }
+
+    //other way of get the distance between two points
     private static double getDistanciaDois(double latitude, double longitude, double latitudePto, double longitudePto) {
         double dlon, dlat, a, distancia;
         dlon = longitudePto - longitude;
@@ -68,6 +69,7 @@ public class Main {
         return 6378140 * distancia;
         /* 6378140 is the radius of the Earth in meters*/ }
 
+    //this one is used
     protected static double getDistancia(double x1, double y1, double x2, double y2) {
         return Math.sqrt(Math.pow(x2 - x1, 2)
                 + Math.pow(y2 - y1, 2) * 1.0);
@@ -109,101 +111,34 @@ public class Main {
                 }
             }
         }
-        //printHashMap(map);
-//        for (Fornecedor fornecedor : fornecedores) {
-//            //cria um array list colocando todos os clientes relacionados com este fornecedor
-//            ArrayList<Registro> regist = new ArrayList<>();
-//            //adicionar ao array apenas clientes que possuem esse fornecedor, depois imprimir
-//            //percorre o map
-//            for (Cliente cliente : map.keySet()) {
-//                if (map.get(cliente).getNome().equals(fornecedor.getNome())) {
-//                    regist.add(new Registro(cliente, fornecedor));
-//                }
-//            }
-//            //antes de ir pro próximo fornecedor ordena e imprime
-//            System.out.println("Fornecedor: " + fornecedor.getNome());
-//            Collections.sort(regist, new ListByLesserValue());
-//            System.out.println("Total de clientes para o fornecedor: " + regist.size());
-//            showData(regist);
-//        }
+        // new way
         for (Fornecedor fornecedor : fornecedores) {
-            ArrayList<Cliente> regist = new ArrayList<>();
+            ArrayList<Cliente> clibyforn = new ArrayList<>();
             for (Cliente cliente : map.keySet()) {
                 if (map.get(cliente).getNome().equals(fornecedor.getNome())) {
-                    regist.add(cliente);
+                    //tenho acesso aqui ao fornecedor do cliente mais próximo e o cliente respectivo
+                    clibyforn.add(new Cliente(cliente.getNome(), cliente.getCordenada(), fornecedor,
+                            getDistancia(cliente.getCordenada().getLatitude(), cliente.getCordenada().getLongitude(), fornecedor.getCordenada().getLatitude(), fornecedor.getCordenada().getLongitude())));
                 }
             }
-
+            //antes de ir pro próximo fornecedor
             System.out.println("Fornecedor: " + fornecedor.getNome());
-            Collections.sort(regist, new ListByLesserClient(fornecedor));
-            System.out.println("Total de clientes para o fornecedor: " + regist.size());
-            showDataTwo(regist);
+            //ordena
+            Collections.sort(clibyforn, new SortClients());
+            System.out.println("Total de clientes para o fornecedor: " + clibyforn.size());
+            showData(clibyforn);
+            clearScreen();
         }
-
     }
 
-    private static class ListByLesserClient implements Comparator<Cliente> {
-
-        Fornecedor f;
-
-        public ListByLesserClient(Fornecedor f) {
-            this.f = f;
-        }
+    private static class SortClients implements Comparator<Cliente> {
 
         @Override
         public int compare(Cliente o1, Cliente o2) {
-//            double d1 = getDistancia(o1.getCordenada().getLongitude(), o1.getCordenada().getLatitude(),
-//                    f.getCordenada().getLongitude(), f.getCordenada().getLatitude());
-//            double d2 = getDistancia(o2.getCordenada().getLongitude(), o2.getCordenada().getLatitude(),
-//                    f.getCordenada().getLongitude(), f.getCordenada().getLatitude());
-            return (int)-((getDistancia(o1.getCordenada().getLongitude(), o1.getCordenada().getLatitude(),
-                    f.getCordenada().getLongitude(), f.getCordenada().getLatitude())) - (getDistancia(o2.getCordenada().getLongitude(), o2.getCordenada().getLatitude(),
-                    f.getCordenada().getLongitude(), f.getCordenada().getLatitude())));
+            return -Double.compare(o1.getDist(), o2.getDist());
         }
 
     }
-
-//    private static class ListByLesserValue implements Comparator<Registro> {
-//        //tenho todos os clientes relacionados ao fornecedor no array: Apenas ordeno pelo número menor
-//
-//        @Override
-//        public int compare(Registro o1, Registro o2) {
-//            //calcula distância e retorna o menor (subtração)
-//            double d1 = getDistancia(o1.getCliente().getCordenada().getLongitude(), o1.getCliente().getCordenada().getLatitude(),
-//                    o1.getFornecedor().getCordenada().getLongitude(), o1.getFornecedor().getCordenada().getLatitude());
-//            double d2 = getDistancia(o2.getCliente().getCordenada().getLongitude(), o2.getCliente().getCordenada().getLatitude(),
-//                    o2.getFornecedor().getCordenada().getLongitude(), o2.getFornecedor().getCordenada().getLatitude());
-//            return (int) -(d1 - d2);
-//        }
-//    }
-}
-
-class Registro {
-
-    private Cliente cliente;
-    private Fornecedor fornecedor;
-
-    public Registro(Cliente cliente, Fornecedor fornecedor) {
-        this.cliente = cliente;
-        this.fornecedor = fornecedor;
-    }
-
-    public Cliente getCliente() {
-        return cliente;
-    }
-
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
-    }
-
-    public Fornecedor getFornecedor() {
-        return fornecedor;
-    }
-
-    public void setFornecedor(Fornecedor fornecedor) {
-        this.fornecedor = fornecedor;
-    }
-
 }
 
 // Plot classes
