@@ -10,8 +10,11 @@ package main;
  * @author evand
  */
 public class Cliente {
+
     private String nome;
     private Coordinates cordenada;
+    private Fornecedor fornProximo;
+    private double dist;
 
     public Cliente() {
     }
@@ -20,7 +23,20 @@ public class Cliente {
         this.nome = nome;
         this.cordenada = cordenada;
     }
-    
+// Still not usable for now.   
+//    public Cliente(Cliente cli, Fornecedor fornProximo, double dist) {
+//        this.nome = cli.getNome();
+//        this.cordenada = cli.getCordenada();
+//        this.fornProximo = fornProximo;
+//        this.dist = dist;
+//    }
+
+    public Cliente(String nome, Coordinates cordenada, Fornecedor fornProximo, double dist) {
+        this.nome = nome;
+        this.cordenada = cordenada;
+        this.fornProximo = fornProximo;
+        this.dist = dist;
+    }
 
     public String getNome() {
         return nome;
@@ -37,5 +53,21 @@ public class Cliente {
     public void setCordenada(Coordinates cordenada) {
         this.cordenada = cordenada;
     }
-    
+
+    public Fornecedor getFornProximo() {
+        return fornProximo;
+    }
+
+    public void setFornProximo(Fornecedor fornProximo) {
+        this.fornProximo = fornProximo;
+    }
+
+    public double getDist() {
+        return dist;
+    }
+
+    public void setDist(double dist) {
+        this.dist = dist;
+    }
+
 }
